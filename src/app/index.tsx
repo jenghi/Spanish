@@ -182,7 +182,7 @@ export default function Startseite() {
         <Text
           style={styles.loadingText}
         >
-          Spanisch wird geladen...
+          Spanisch wird geladen... TEST 123
         </Text>
       </View>
     );
