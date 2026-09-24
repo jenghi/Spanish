@@ -50,26 +50,40 @@ export default function Startseite() {
           await AsyncStorage.getItem(EIGENE_VOKABELN_KEY);
 
         if (lernstand) {
-          setLernstaende(
-            normalisiereLernstand(
-              JSON.parse(lernstand)
-            )
-          );
+          try {
+            setLernstaende(
+              normalisiereLernstand(
+                JSON.parse(lernstand)
+              )
+            );
+          } catch (error) {
+            console.log(
+              "Fehler beim Lernstand:",
+              error
+            );
+          }
         }
 
         if (eigene) {
-          setEigeneVokabeln(
-            JSON.parse(eigene)
-          );
+          try {
+            setEigeneVokabeln(
+              JSON.parse(eigene)
+            );
+          } catch (error) {
+            console.log(
+              "Fehler bei eigenen Vokabeln:",
+              error
+            );
+          }
         }
       } catch (error) {
         console.log(
           "Fehler beim Laden:",
           error
         );
+      } finally {
+        setGeladen(true);
       }
-
-      setGeladen(true);
     }
 
     laden();
