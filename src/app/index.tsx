@@ -1,6 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+
 import {
   Pressable,
   ScrollView,
@@ -15,8 +15,7 @@ import {
 } from "../data/vokabeln";
 
 import {
-  normalisiereLernstand,
-  type Lernstand,
+  type Lernstand
 } from "../utils/lernSystem";
 
 type Vokabel = {
@@ -38,56 +37,9 @@ export default function Startseite() {
     Vokabel[]
   >([]);
 
-  const [geladen, setGeladen] = useState(false);
+ const [geladen, setGeladen] = useState(true);
 
-  useEffect(() => {
-    async function laden() {
-      try {
-        const lernstand =
-          await AsyncStorage.getItem(LERNSTAND_KEY);
 
-        const eigene =
-          await AsyncStorage.getItem(EIGENE_VOKABELN_KEY);
-
-        if (lernstand) {
-          try {
-            setLernstaende(
-              normalisiereLernstand(
-                JSON.parse(lernstand)
-              )
-            );
-          } catch (error) {
-            console.log(
-              "Fehler beim Lernstand:",
-              error
-            );
-          }
-        }
-
-        if (eigene) {
-          try {
-            setEigeneVokabeln(
-              JSON.parse(eigene)
-            );
-          } catch (error) {
-            console.log(
-              "Fehler bei eigenen Vokabeln:",
-              error
-            );
-          }
-        }
-      } catch (error) {
-        console.log(
-          "Fehler beim Laden:",
-          error
-        );
-      } finally {
-        setGeladen(true);
-      }
-    }
-
-    laden();
-  }, []);
 
   const alleKarten = useMemo<Vokabel[]>(() => {
     return [
