@@ -28,6 +28,14 @@ type Vokabel = {
 
 const LERNSTAND_KEY = "vokabel_lernstand";
 const EIGENE_VOKABELN_KEY = "eigene_vokabeln";
+const EIGENE_KATEGORIEN_KEY = "eigene_kategorien";
+
+type Kategorie = {
+  id: string;
+  name: string;
+  emoji: string;
+  eigene?: boolean;
+};
 
 export default function Startseite() {
   const [lernstaende, setLernstaende] = useState<
@@ -84,7 +92,7 @@ export default function Startseite() {
     }, [laden])
   );
 
-  const alleKarten = useMemo<Vokabel[]>(() => {
+  const alleKategorien = useMemo<Kategorie[]>(() => {\n    const vorhandeneIds = new Set(kategorien.map((k) => String(k.id)));\n    return [\n      ...kategorien.map((k) => ({ ...k })),\n      ...eigeneKategorien.filter((k) => !vorhandeneIds.has(String(k.id))),\n    ];\n  }, [eigeneKategorien]);\n\n  const alleKarten = useMemo<Vokabel[]>(() => {
     return [
       ...(alleVokabeln as Vokabel[]),
       ...eigeneVokabeln,
@@ -113,7 +121,7 @@ export default function Startseite() {
       const status =
         lernstaende[String(karte.id)];
 
-      return status?.stufe === 3;
+      return (status?.stufe ?? 0) >= 3;
     }).length;
   }, [alleKarten, lernstaende]);
 
@@ -158,7 +166,7 @@ export default function Startseite() {
             String(karte.id)
           ];
 
-        return status?.stufe === 3;
+        return (status?.stufe ?? 0) >= 3;
       }
     ).length;
 
@@ -418,14 +426,14 @@ export default function Startseite() {
         <Text
           style={styles.sectionCount}
         >
-          {kategorien.length}
+          {alleKategorien.length}
         </Text>
       </View>
 
       <View
         style={styles.categories}
       >
-        {kategorien.map((kategorie) => {
+        {alleKategorien.map((kategorie) => {
           const fortschritt =
             kategorieFortschritt(
               String(kategorie.id)

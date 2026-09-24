@@ -1,6 +1,6 @@
 import * as Speicher from "../utils/speicher";
 import { router, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
     Pressable,
     ScrollView,
@@ -14,7 +14,7 @@ import {
     kategorien,
 } from "../data/vokabeln";
 
-const STORAGE_KEY = "vokabel_lernstand";
+const STORAGE_KEY = "vokabel_lernstand";\nconst EIGENE_VOKABELN_KEY = "eigene_vokabeln";\nconst EIGENE_KATEGORIEN_KEY = "eigene_kategorien";\n\ntype Vokabel = {\n  id: string | number;\n  deutsch: string;\n  spanisch: string;\n  kategorie: string;\n};\n\ntype Kategorie = {\n  id: string;\n  name: string;\n  emoji: string;\n  eigene?: boolean;\n};
 
 type LernstandEintrag = {
   stufe: number;
@@ -50,11 +50,27 @@ export default function StatistikScreen() {
           );
 
         if (gespeichert) {
-          setLernstand(
-            JSON.parse(gespeichert)
-          );
+          const parsed = JSON.parse(gespeichert);
+          setLernstand(parsed && typeof parsed === "object" ? parsed : {});
         } else {
           setLernstand({});
+        }
+
+        const eigeneVokabelnData = await Speicher.getItem(EIGENE_VOKABELN_KEY);
+        const eigeneKategorienData = await Speicher.getItem(EIGENE_KATEGORIEN_KEY);
+
+        if (eigeneVokabelnData) {
+          const parsed = JSON.parse(eigeneVokabelnData);
+          setEigeneVokabeln(Array.isArray(parsed) ? parsed : []);
+        } else {
+          setEigeneVokabeln([]);
+        }
+
+        if (eigeneKategorienData) {
+          const parsed = JSON.parse(eigeneKategorienData);
+          setEigeneKategorien(Array.isArray(parsed) ? parsed : []);
+        } else {
+          setEigeneKategorien([]);
         }
       } catch (error) {
         console.log(
@@ -84,6 +100,19 @@ export default function StatistikScreen() {
     );
   }
 
+  const alleKarten = useMemo<Vokabel[]>(
+    () => [...alleVokabeln, ...eigeneVokabeln],
+    [eigeneVokabeln]
+  );
+
+  const alleKategorien = useMemo<Kategorie[]>(() => {
+    const ids = new Set(kategorien.map((k) => String(k.id)));
+    return [
+      ...kategorien.map((k) => ({ ...k })),
+      ...eigeneKategorien.filter((k) => !ids.has(String(k.id))),
+    ];
+  }, [eigeneKategorien]);
+
   const jetzt = Date.now();
 
   /*
@@ -94,7 +123,7 @@ export default function StatistikScreen() {
     alleVokabeln.length;
 
   const neu =
-    alleVokabeln.filter((vokabel) => {
+    alleKarten.filter((vokabel) => {
       const status =
         lernstand[
           String(vokabel.id)
@@ -107,7 +136,7 @@ export default function StatistikScreen() {
     }).length;
 
   const lernt =
-    alleVokabeln.filter((vokabel) => {
+    alleKarten.filter((vokabel) => {
       const status =
         lernstand[
           String(vokabel.id)
@@ -120,7 +149,7 @@ export default function StatistikScreen() {
     }).length;
 
   const gelernt =
-    alleVokabeln.filter((vokabel) => {
+    alleKarten.filter((vokabel) => {
       const status =
         lernstand[
           String(vokabel.id)
@@ -133,7 +162,7 @@ export default function StatistikScreen() {
     }).length;
 
   const sehrGut =
-    alleVokabeln.filter((vokabel) => {
+    alleKarten.filter((vokabel) => {
       const status =
         lernstand[
           String(vokabel.id)
@@ -147,7 +176,7 @@ export default function StatistikScreen() {
     }).length;
 
   const faellig =
-    alleVokabeln.filter((vokabel) => {
+    alleKarten.filter((vokabel) => {
       const status =
         lernstand[
           String(vokabel.id)
@@ -205,7 +234,7 @@ export default function StatistikScreen() {
     kategorieId: string
   ) {
     const vokabeln =
-      alleVokabeln.filter(
+      alleKarten.filter(
         (vokabel) =>
           vokabel.kategorie ===
           kategorieId
@@ -462,7 +491,7 @@ export default function StatistikScreen() {
         Fortschritt nach Kategorie
       </Text>
 
-      {kategorien.map((kategorie) => {
+      {alleKategorien.map((kategorie) => {
         const daten =
           kategorieDaten(
             kategorie.id

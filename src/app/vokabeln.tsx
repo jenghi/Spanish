@@ -804,7 +804,7 @@ export default function VokabelnScreen() {
   /*
    * Nächste Lernkarte
    */
-  function naechsteVokabel(
+  async function naechsteVokabel(
     richtig: boolean
   ) {
     const aktuelleVokabel =
@@ -814,7 +814,7 @@ export default function VokabelnScreen() {
       return;
     }
 
-    aktualisiereLernstand(
+    await aktualisiereLernstand(
       aktuelleVokabel,
       richtig
     );
