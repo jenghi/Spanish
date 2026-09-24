@@ -1,4 +1,4 @@
-import * as Speicher from "../utils/speicher";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import {
@@ -116,10 +116,10 @@ export default function KategorienScreen() {
   const datenLaden = useCallback(async () => {
     try {
       const kategorienData =
-        await Speicher.getItem(KATEGORIEN_KEY);
+        await AsyncStorage.getItem(KATEGORIEN_KEY);
 
       const vokabelnData =
-        await Speicher.getItem(VOKABELN_KEY);
+        await AsyncStorage.getItem(VOKABELN_KEY);
 
       let geladeneKategorien: Kategorie[] = [];
       let geladeneVokabeln: Vokabel[] = [];
@@ -245,7 +245,7 @@ export default function KategorienScreen() {
 
     try {
       const kategorienData =
-        await Speicher.getItem(KATEGORIEN_KEY);
+        await AsyncStorage.getItem(KATEGORIEN_KEY);
 
       let aktuelleKategorien: Kategorie[] = [];
 
@@ -285,7 +285,7 @@ export default function KategorienScreen() {
             return kategorie;
           });
 
-        await Speicher.setItem(
+        await AsyncStorage.setItem(
           KATEGORIEN_KEY,
           JSON.stringify(neueKategorien)
         );
@@ -320,7 +320,7 @@ export default function KategorienScreen() {
         neueKategorie,
       ];
 
-      await Speicher.setItem(
+      await AsyncStorage.setItem(
         KATEGORIEN_KEY,
         JSON.stringify(neueKategorien)
       );
@@ -394,7 +394,7 @@ export default function KategorienScreen() {
 
     try {
       const gespeicherteVokabeln =
-        await Speicher.getItem(VOKABELN_KEY);
+        await AsyncStorage.getItem(VOKABELN_KEY);
 
       if (gespeicherteVokabeln) {
         const parsed = JSON.parse(
@@ -497,7 +497,7 @@ export default function KategorienScreen() {
       // --------------------------------------------------------
 
       const vokabelnData =
-        await Speicher.getItem(VOKABELN_KEY);
+        await AsyncStorage.getItem(VOKABELN_KEY);
 
       let aktuelleVokabeln: Vokabel[] = [];
 
@@ -544,7 +544,7 @@ export default function KategorienScreen() {
       // --------------------------------------------------------
 
       const kategorienData =
-        await Speicher.getItem(
+        await AsyncStorage.getItem(
           KATEGORIEN_KEY
         );
 
@@ -575,7 +575,7 @@ export default function KategorienScreen() {
             String(kategorie.id)
         );
 
-      await Speicher.setItem(
+      await AsyncStorage.setItem(
         KATEGORIEN_KEY,
         JSON.stringify(
           verbleibendeKategorien

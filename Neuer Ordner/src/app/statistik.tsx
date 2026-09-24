@@ -1,4 +1,4 @@
-import * as Speicher from "../utils/speicher";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import {
@@ -45,7 +45,7 @@ export default function StatistikScreen() {
     async () => {
       try {
         const gespeichert =
-          await Speicher.getItem(
+          await AsyncStorage.getItem(
             STORAGE_KEY
           );
 

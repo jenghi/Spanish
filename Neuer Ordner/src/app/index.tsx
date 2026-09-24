@@ -1,6 +1,6 @@
-import * as Speicher from "../utils/speicher";
 import { router } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+
 import {
   Pressable,
   ScrollView,
@@ -15,8 +15,7 @@ import {
 } from "../data/vokabeln";
 
 import {
-  normalisiereLernstand,
-  type Lernstand,
+  type Lernstand
 } from "../utils/lernSystem";
 
 type Vokabel = {
@@ -38,42 +37,9 @@ export default function Startseite() {
     Vokabel[]
   >([]);
 
-  const [geladen, setGeladen] = useState(false);
+ const [geladen, setGeladen] = useState(true);
 
-  useEffect(() => {
-    async function laden() {
-      try {
-        const lernstand =
-          await Speicher.getItem(LERNSTAND_KEY);
 
-        const eigene =
-          await Speicher.getItem(EIGENE_VOKABELN_KEY);
-
-        if (lernstand) {
-          setLernstaende(
-            normalisiereLernstand(
-              JSON.parse(lernstand)
-            )
-          );
-        }
-
-        if (eigene) {
-          setEigeneVokabeln(
-            JSON.parse(eigene)
-          );
-        }
-      } catch (error) {
-        console.log(
-          "Fehler beim Laden:",
-          error
-        );
-      }
-
-      setGeladen(true);
-    }
-
-    laden();
-  }, []);
 
   const alleKarten = useMemo<Vokabel[]>(() => {
     return [

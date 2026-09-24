@@ -1,4 +1,4 @@
-import * as Speicher from "../utils/speicher";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -131,17 +131,17 @@ export default function VokabelnScreen() {
   async function ladeDaten() {
     try {
       const gespeicherterLernstand =
-        await Speicher.getItem(
+        await AsyncStorage.getItem(
           LERNSTAND_KEY
         );
 
       const gespeicherteVokabeln =
-        await Speicher.getItem(
+        await AsyncStorage.getItem(
           EIGENE_VOKABELN_KEY
         );
 
       const gespeicherteKategorien =
-        await Speicher.getItem(
+        await AsyncStorage.getItem(
           EIGENE_KATEGORIEN_KEY
         );
 
@@ -450,7 +450,7 @@ export default function VokabelnScreen() {
         ];
       }
 
-      await Speicher.setItem(
+      await AsyncStorage.setItem(
         EIGENE_VOKABELN_KEY,
         JSON.stringify(neueListe)
       );
@@ -544,7 +544,7 @@ export default function VokabelnScreen() {
       );
 
       const gespeicherteDaten =
-        await Speicher.getItem(
+        await AsyncStorage.getItem(
           EIGENE_VOKABELN_KEY
         );
 
@@ -599,7 +599,7 @@ export default function VokabelnScreen() {
       /*
        * Vokabel speichern
        */
-      await Speicher.setItem(
+      await AsyncStorage.setItem(
         EIGENE_VOKABELN_KEY,
         JSON.stringify(
           neueVokabeln
@@ -610,7 +610,7 @@ export default function VokabelnScreen() {
        * Lernstand laden
        */
       const gespeicherterLernstand =
-        await Speicher.getItem(
+        await AsyncStorage.getItem(
           LERNSTAND_KEY
         );
 
@@ -646,7 +646,7 @@ export default function VokabelnScreen() {
         String(vokabel.id)
       ];
 
-      await Speicher.setItem(
+      await AsyncStorage.setItem(
         LERNSTAND_KEY,
         JSON.stringify(
           neuerLernstand
@@ -713,7 +713,7 @@ export default function VokabelnScreen() {
     setLernstand(neu);
 
     try {
-      await Speicher.setItem(
+      await AsyncStorage.setItem(
         LERNSTAND_KEY,
         JSON.stringify(neu)
       );

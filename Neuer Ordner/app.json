@@ -34,10 +34,10 @@
         }
       ]
     ],
-    "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": true,
-      "baseUrl": "/Spanish"
-    }
+"experiments": {
+  "typedRoutes": true,
+  "reactCompiler": true,
+  "baseUrl": "/Spanish"
+}
   }
 }
