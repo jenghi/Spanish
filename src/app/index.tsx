@@ -46,6 +46,10 @@ export default function Startseite() {
     Vokabel[]
   >([]);
 
+  const [eigeneKategorien, setEigeneKategorien] = useState<
+    Kategorie[]
+  >([]);
+
   const [geladen, setGeladen] = useState(false);
 
   const laden = useCallback(async () => {
@@ -57,6 +61,9 @@ export default function Startseite() {
 
       const eigene =
         await Speicher.getItem(EIGENE_VOKABELN_KEY);
+
+      const eigeneKat =
+        await Speicher.getItem(EIGENE_KATEGORIEN_KEY);
 
       if (lernstand) {
         setLernstaende(
@@ -74,6 +81,14 @@ export default function Startseite() {
         );
       } else {
         setEigeneVokabeln([]);
+      }
+
+      if (eigeneKat) {
+        setEigeneKategorien(
+          JSON.parse(eigeneKat)
+        );
+      } else {
+        setEigeneKategorien([]);
       }
     } catch (error) {
       console.log(
