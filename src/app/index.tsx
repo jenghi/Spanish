@@ -1,4 +1,3 @@
-import * as Speicher from "../utils/speicher";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import {
@@ -8,6 +7,7 @@ import {
   Text,
   View,
 } from "react-native";
+import * as Speicher from "../utils/speicher";
 
 import {
   alleVokabeln,
@@ -92,12 +92,25 @@ export default function Startseite() {
     }, [laden])
   );
 
-  const alleKategorien = useMemo<Kategorie[]>(() => {\n    const vorhandeneIds = new Set(kategorien.map((k) => String(k.id)));\n    return [\n      ...kategorien.map((k) => ({ ...k })),\n      ...eigeneKategorien.filter((k) => !vorhandeneIds.has(String(k.id))),\n    ];\n  }, [eigeneKategorien]);\n\n  const alleKarten = useMemo<Vokabel[]>(() => {
-    return [
-      ...(alleVokabeln as Vokabel[]),
-      ...eigeneVokabeln,
-    ];
-  }, [eigeneVokabeln]);
+ const alleKategorien = useMemo<Kategorie[]>(() => {
+  const vorhandeneIds = new Set(
+    kategorien.map((k) => String(k.id))
+  );
+
+  return [
+    ...kategorien.map((k) => ({ ...k })),
+    ...eigeneKategorien.filter(
+      (k) => !vorhandeneIds.has(String(k.id))
+    ),
+  ];
+}, [kategorien, eigeneKategorien]);
+
+const alleKarten = useMemo<Vokabel[]>(() => {
+  return [
+    ...(alleVokabeln as Vokabel[]),
+    ...eigeneVokabeln,
+  ];
+}, [eigeneVokabeln]);
 
   const heuteZuLernen = useMemo(() => {
     const jetzt = Date.now();
