@@ -34,7 +34,7 @@
         }
       ]
     ],
-   "experiments": {
+"experiments": {
   "typedRoutes": true,
   "reactCompiler": true,
   "baseUrl": "/spanisch-lernen"
