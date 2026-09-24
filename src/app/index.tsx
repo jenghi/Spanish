@@ -1,6 +1,6 @@
 import * as Speicher from "../utils/speicher";
-import { router } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useMemo, useState } from "react";
 import {
   Pressable,
   ScrollView,
@@ -40,40 +40,49 @@ export default function Startseite() {
 
   const [geladen, setGeladen] = useState(false);
 
-  useEffect(() => {
-    async function laden() {
-      try {
-        const lernstand =
-          await Speicher.getItem(LERNSTAND_KEY);
+  const laden = useCallback(async () => {
+    setGeladen(false);
 
-        const eigene =
-          await Speicher.getItem(EIGENE_VOKABELN_KEY);
+    try {
+      const lernstand =
+        await Speicher.getItem(LERNSTAND_KEY);
 
-        if (lernstand) {
-          setLernstaende(
-            normalisiereLernstand(
-              JSON.parse(lernstand)
-            )
-          );
-        }
+      const eigene =
+        await Speicher.getItem(EIGENE_VOKABELN_KEY);
 
-        if (eigene) {
-          setEigeneVokabeln(
-            JSON.parse(eigene)
-          );
-        }
-      } catch (error) {
-        console.log(
-          "Fehler beim Laden:",
-          error
+      if (lernstand) {
+        setLernstaende(
+          normalisiereLernstand(
+            JSON.parse(lernstand)
+          )
         );
+      } else {
+        setLernstaende({});
       }
 
+      if (eigene) {
+        setEigeneVokabeln(
+          JSON.parse(eigene)
+        );
+      } else {
+        setEigeneVokabeln([]);
+      }
+    } catch (error) {
+      console.log(
+        "Fehler beim Laden:",
+        error
+      );
+    } finally {
       setGeladen(true);
     }
-
-    laden();
   }, []);
+
+  // Beim Zurückkehren auf die Startseite den aktuellen Lernstand neu laden.
+  useFocusEffect(
+    useCallback(() => {
+      laden();
+    }, [laden])
+  );
 
   const alleKarten = useMemo<Vokabel[]>(() => {
     return [
